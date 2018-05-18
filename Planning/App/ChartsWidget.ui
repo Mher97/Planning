@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ChartsWidget</class>
+ <widget class="QWidget" name="ChartsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>341</width>
+     <height>251</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
+    <item row="0" column="0">
+     <widget class="PlanningChartWidget" name="planningChartWidget" native="true"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="WorkLoadChartWidget" name="workLoadChartWidget" native="true"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlanningChartWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">Charts/PlanningChartWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WorkLoadChartWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">Charts/WorkLoadChartWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

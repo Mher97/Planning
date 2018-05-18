@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PlanningWidget</class>
+ <widget class="QWidget" name="PlanningWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#PlanningWidget { 
+background-color: rgb(229, 243, 255)
+}</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>13</x>
+     <y>13</y>
+     <width>371</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="leftMargin">
+     <number>3</number>
+    </property>
+    <property name="topMargin">
+     <number>3</number>
+    </property>
+    <property name="rightMargin">
+     <number>3</number>
+    </property>
+    <property name="bottomMargin">
+     <number>3</number>
+    </property>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="FilterComboBox" name="filterComboBox"/>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>78</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTreeView" name="treeView">
+      <property name="styleSheet">
+       <string notr="true">QTreeView::item:hover {backgroundcolor:rgb(229,243,255);
+														selection-color: black;}
+QTreeView::item:selected {background-color: rgb(21, 153, 255);
+																selection-color: white;}
+QHeaderView::section {background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                			    stop: 0 			#7aacd7, stop: 0.614 white,
+                                				 stop: 0.614  #FF007F96,  stop: 0.853 white
+													 stop: 0.853 	#7aacd7, stop: 1.0 white);
+													 color: rgb(255,255,255);
+                                              border-width: 1px; border-style: solid;
+													 border-color: #D8D8D8;
+                                              height: 40px; padding-left:10px;
+													 font: 10pt \Open Sans\;}
+</string>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FilterComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">PlanningTree/FilterComboBox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

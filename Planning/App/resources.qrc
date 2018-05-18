@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/branch.png</file>
+        <file>Resources/save.png</file>
+        <file>Resources/checked.png</file>
+        <file>Resources/unchecked.png</file>
+        <file>Resources/Project.png</file>
+        <file>Resources/Monitoring.png</file>
+        <file>Resources/load.png</file>
+        <file>Resources/import.ico</file>
+        <file>Resources/new.png</file>
+        <file>Resources/charts.png</file>
+        <file>Resources/maximize.png</file>
+        <file>Resources/planning.png</file>
+        <file>Resources/settings.png</file>
+        <file>Resources/delete .png</file>
+        <file>Resources/export.png</file>
+        <file>Resources/help.png</file>
+        <file>Resources/appIcon.png</file>
+    </qresource>
+</RCC>
