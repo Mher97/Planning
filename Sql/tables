@@ -1,0 +1,33 @@
+create table BranchItems
+(
+      	name   text    NOT NULL,
+      	id     int     NOT NULL  AUTO_INCREMENT  Primary Key
+);
+
+create table MonitorItems
+(
+		name   				text       NOT NULL,
+		id    				int  	   NOT NULL  AUTO_INCREMENT,
+    	parentId			int 	   NOT NULL,
+    	Primary Key(id, parentId)
+);
+
+create table ImportedData
+(
+		id			   		int 	NOT NULL  AUTO_INCREMENT,
+    	data		   		BLOB  	NOT NULL,
+    	monitoringId   		int		NOT NULL,
+    	Primary key(id, monitoringId)
+);
+
+create table ImportedDataMapping
+(
+		id					int 		NOT NULL  AUTO_INCREMENT,		
+		nameColumn			int 		NOT NULL,
+    	durationColumn  	int 		NOT NULL,
+    	dependencyColumn 	int 		NOT NULL,
+    	monitoringId 		int 		NOT NULL,
+    	Primary Key(id, monitoringId)
+);
+
+
