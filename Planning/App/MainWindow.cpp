@@ -194,7 +194,7 @@ void MainWindow::onMonitoringDataChanged(MonitorItem * monitorItem)
 
 void MainWindow::dataImport()
 {
-    startBusy("Calculatation...");
+    startBusy("Calculation...");
     m_centralWidget->removeTab(m_centralWidget->indexOf(m_planningWidget));
     m_centralWidget->removeTab(m_centralWidget->indexOf(m_chartsWidget));
     QApplication::processEvents();
