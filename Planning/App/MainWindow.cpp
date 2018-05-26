@@ -116,6 +116,7 @@ void MainWindow::initConnections()
 
 void MainWindow::onTbImportClicked()
 {
+    m_centralWidget->setCurrentWidget(m_mappingWidget);
     QFileDialog fileDialog(this);
     fileDialog.setFileMode(QFileDialog::ExistingFile);
     fileDialog.setNameFilter("Data Files (*.csv)");
