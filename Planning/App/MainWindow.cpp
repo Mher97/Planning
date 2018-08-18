@@ -9,7 +9,7 @@
 #include "../Engine/Shceduler.h"
 #include "ChartsWidget.h"
 #include "PlanningTree/PlanningWidget.h"
-#include "WorkSpace/MonitorItem.h"
+#include "../Data/MonitorItem.h"
 #include "Settings/ISettings.h"
 #include "Settings/DbSettingsWidget.h"
 #include "HelpDialog.h"

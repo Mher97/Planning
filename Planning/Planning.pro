@@ -8,6 +8,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     App \
-    Engine
+    Engine \
+    Data
 
 

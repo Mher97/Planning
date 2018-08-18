@@ -1,6 +1,6 @@
 #include "MappingProxyModel.h"
-#include "../BaseModel.h"
-#include "DataReading/MappingItem.h"
+#include "BaseModel.h"
+#include "MappingItem.h"
 
 MappingProxyModel::MappingProxyModel(QObject *parent) : BaseProxyModel(parent)
 {

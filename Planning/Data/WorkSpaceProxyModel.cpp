@@ -15,4 +15,3 @@ bool WorkSpaceProxyModel::filterAcceptsColumn(int source_col, const QModelIndex 
     Q_UNUSED(source_parent);
     return (source_col < 1);
 }
-

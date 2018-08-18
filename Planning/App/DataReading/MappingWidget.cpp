@@ -1,9 +1,9 @@
 #include "MappingWidget.h"
 #include "ui_MappingWidget.h"
-#include "../BaseModel.h"
+#include "../Data/BaseModel.h"
 #include "DataReading/CheckBoxItemDelegate.h"
-#include "DataReading/MappingProxyModel.h"
-#include "DataReading/MappingModel.h"
+#include "../Data/MappingProxyModel.h"
+#include "../Data/MappingModel.h"
 #include "DataReading/DataHandler.h"
 #include <QFileDialog>
 #include <QDesktopServices>

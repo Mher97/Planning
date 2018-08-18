@@ -3,10 +3,10 @@
 
 #include <QWidget>
 #include <QTreeView>
-#include "DataReading/MappingItem.h"
+#include "../Data/MappingItem.h"
 #include <QHash>
 #include <QPair>
-#include "./WorkSpace/MonitorItem.h"
+#include "../Data/MonitorItem.h"
 
 class MappingModel;
 class MappingProxyModel;

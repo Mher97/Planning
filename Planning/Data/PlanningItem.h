@@ -1,7 +1,7 @@
 #ifndef PLANNINGITEM_H
 #define PLANNINGITEM_H
 
-#include "../BaseItem.h"
+#include "BaseItem.h"
 
 class PlanningItem : public BaseItem
 {

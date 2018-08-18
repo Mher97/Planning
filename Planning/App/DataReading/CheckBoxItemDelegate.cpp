@@ -3,7 +3,7 @@
 #include <QMouseEvent>
 #include <QCheckBox>
 #include <QApplication>
-#include "../BaseModel.h"
+#include "../Data/BaseModel.h"
 
 CheckBoxItemDelegate::CheckBoxItemDelegate(QObject *parent)
     : QStyledItemDelegate(parent)

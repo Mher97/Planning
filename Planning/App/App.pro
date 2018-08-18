@@ -31,12 +31,7 @@ DEPENDPATH += .
 
 SOURCES += \
     WorkSpace/WorkSpaceWidget.cpp \
-    WorkSpace/WorkSpaceProxyModel.cpp \
-    WorkSpace/WorkSpaceItem.cpp \
     WorkSpace/WorkSpaceController.cpp \
-    WorkSpace/ProjectItem.cpp \
-    WorkSpace/MonitorItem.cpp \
-    WorkSpace/BranchItem.cpp \
     Waiting/BusyThread.cpp \
     Waiting/BusyIndicator.cpp \
     Waiting/BusyDialog.cpp \
@@ -44,15 +39,7 @@ SOURCES += \
     Settings/ISettings.cpp \
     Settings/DbSettingsWidget.cpp \
     PlanningTree/PlanningWidget.cpp \
-    PlanningTree/PlanningProxyModel.cpp \
-    PlanningTree/PlanningModel.cpp \
-    PlanningTree/PlanningItem.cpp \
-    PlanningTree/FilterModel.cpp \
-    PlanningTree/FilterItem.cpp \
     DataReading/MappingWidget.cpp \
-    DataReading/MappingProxyModel.cpp \
-    DataReading/MappingModel.cpp \
-    DataReading/MappingItem.cpp \
     DataReading/DataHandler.cpp \
     DataReading/CheckBoxItemDelegate.cpp \
     Charts/WorkLoadSeries.cpp \
@@ -66,23 +53,16 @@ SOURCES += \
     Charts/BaseChartWindow.cpp \
     Charts/BaseChartWidget.cpp \
     DbManager.cpp \
-    BaseItem.cpp \
-    BaseModel.cpp \
     ChartsWidget.cpp \
     HelpDialog.cpp \
     main.cpp \
     MainWindow.cpp \
-    BaseProxyModel.cpp \
-    PlanningTree/FilterComboBox.cpp
+    PlanningTree/FilterComboBox.cpp \
+    WorkSpace/WorkSpaceView.cpp
 
 HEADERS += \
     WorkSpace/WorkSpaceWidget.h \
-    WorkSpace/WorkSpaceProxyModel.h \
-    WorkSpace/WorkSpaceItem.h \
     WorkSpace/WorkSpaceController.h \
-    WorkSpace/ProjectItem.h \
-    WorkSpace/MonitorItem.h \
-    WorkSpace/BranchItem.h \
     Waiting/BusyThread.h \
     Waiting/BusyManager.h \
     Waiting/BusyIndicator.h \
@@ -91,15 +71,7 @@ HEADERS += \
     Settings/ISettings.h \
     Settings/DbSettingsWidget.h \
     PlanningTree/PlanningWidget.h \
-    PlanningTree/PlanningProxyModel.h \
-    PlanningTree/PlanningModel.h \
-    PlanningTree/PlanningItem.h \
-    PlanningTree/FilterModel.h \
-    PlanningTree/FilterItem.h \
     DataReading/MappingWidget.h \
-    DataReading/MappingProxyModel.h \
-    DataReading/MappingModel.h \
-    DataReading/MappingItem.h \
     DataReading/DataHandler.h \
     DataReading/CheckBoxItemDelegate.h \
     Charts/WorkLoadSeries.h \
@@ -112,16 +84,13 @@ HEADERS += \
     Charts/IChart.h \
     Charts/BaseChartWindow.h \
     Charts/BaseChartWidget.h \
-    BaseItem.h \
     MainWindow.h \
-    ItemType.h \
     HelpDialog.h \
     Globals.h \
     DbManager.h \
     ChartsWidget.h \
-    BaseModel.h \
-    BaseProxyModel.h \
-    PlanningTree/FilterComboBox.h
+    PlanningTree/FilterComboBox.h \
+    WorkSpace/WorkSpaceView.h
 
 FORMS += \
     WorkSpace/WorkSpaceWidget.ui \
@@ -143,11 +112,21 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Engine/release/ -lE
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Engine/debug/ -lEngine
 else:unix: LIBS += -L$$OUT_PWD/../Engine/ -lEngine
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Data/release/ -lData
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Data/debug/ -lData
+else:unix: LIBS += -L$$OUT_PWD/../Data/ -lData
+
 INCLUDEPATH += $$PWD/../Engine
 DEPENDPATH += $$PWD/../Engine
+INCLUDEPATH += $$PWD/../Data
+DEPENDPATH += $$PWD/../Data
 
 win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../Engine/release/Engine.lib
 else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../Engine/debug/Engine.lib
 else:unix: PRE_TARGETDEPS += $$OUT_PWD/../Engine/libEngine.a
+
+win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../Data/release/Data.lib
+else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../Data/debug/Data.lib
+else:unix: PRE_TARGETDEPS += $$OUT_PWD/../Data/libData.a
 
 

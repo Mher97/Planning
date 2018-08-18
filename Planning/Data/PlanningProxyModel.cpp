@@ -1,5 +1,5 @@
 #include "PlanningProxyModel.h"
-#include "../BaseModel.h"
+#include "BaseModel.h"
 #include "PlanningItem.h"
 
 PlanningProxyModel::PlanningProxyModel(QObject *parent) : BaseProxyModel(parent)

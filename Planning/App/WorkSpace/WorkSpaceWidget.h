@@ -10,7 +10,7 @@ namespace Ui {
 class WorkSpaceWidget;
 }
 
-class BaseModel;
+class WorkSpaceModel;
 class WorkSpaceProxyModel;
 class WorkSpaceItem;
 class MonitorItem;
@@ -26,7 +26,7 @@ class WorkSpaceWidget : public QWidget
         Ui::WorkSpaceWidget *ui;
         static const int TYPES_COUNT = 2;
         static const QList<ItemType::Type> TYPES_ARRAY;
-        BaseModel *m_model;
+        WorkSpaceModel *m_model;
         WorkSpaceProxyModel *m_proxyModel;
         std::array<QList<int>, TYPES_COUNT> m_deletedFromBase;
         QModelIndex m_currentMonitoringIndex;
@@ -47,6 +47,7 @@ class WorkSpaceWidget : public QWidget
         void onTbLoadClicked();
         void onTbSaveClicked();
         void onDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
+        void onDetectedMultipleNameDefinition(const QString& message);
         void currentItemChanged();
         void getMonitoringData(const QModelIndex& index);
 };

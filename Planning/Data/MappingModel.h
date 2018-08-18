@@ -1,7 +1,7 @@
 #ifndef MAPPINGMODEL_H
 #define MAPPINGMODEL_H
 
-#include "../BaseModel.h"
+#include "BaseModel.h"
 
 class MappingModel : public BaseModel
 {

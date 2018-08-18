@@ -1,7 +1,7 @@
 #ifndef PLANNINGPROXYMODEL_H
 #define PLANNINGPROXYMODEL_H
 
-#include "../BaseProxyModel.h"
+#include "BaseProxyModel.h"
 
 class PlanningProxyModel : public BaseProxyModel
 {

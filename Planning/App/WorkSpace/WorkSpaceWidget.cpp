@@ -1,11 +1,11 @@
 #include "WorkSpaceWidget.h"
 #include "ui_WorkSpaceWidget.h"
-#include "../BaseModel.h"
-#include "WorkSpaceProxyModel.h"
+#include "../Data/WorkSpaceModel.h"
+#include "../Data/WorkSpaceProxyModel.h"
 #include "WorkSpaceController.h"
-#include "ProjectItem.h"
-#include "BranchItem.h"
-#include "MonitorItem.h"
+#include "../Data/ProjectItem.h"
+#include "../Data/BranchItem.h"
+#include "../Data/MonitorItem.h"
 #include "../DbManager.h"
 #include "Waiting/BusyDialog.h"
 #include "Waiting/BusyManager.h"
@@ -63,7 +63,7 @@ void WorkSpaceWidget::initUi()
 
 void WorkSpaceWidget::initModel()
 {
-    m_model = new BaseModel(this);
+    m_model = new WorkSpaceModel(this);
     m_model->initModel();
     m_proxyModel = new WorkSpaceProxyModel(this);
     m_proxyModel->setSourceModel(m_model);
@@ -76,7 +76,8 @@ void WorkSpaceWidget::initConnections()
     connect(ui->tbDelete, &QToolButton::clicked, this, &WorkSpaceWidget::onTbDeleteClicked);
     connect(ui->tbLoad, &QToolButton::clicked, this, &WorkSpaceWidget::onTbLoadClicked);
     connect(ui->tbSave, &QToolButton::clicked, this, &WorkSpaceWidget::onTbSaveClicked);
-    connect(m_model, &BaseModel::dataChanged, this, &WorkSpaceWidget::onDataChanged);
+    connect(m_model, &WorkSpaceModel::dataChanged, this, &WorkSpaceWidget::onDataChanged);
+    connect(m_model, &WorkSpaceModel::detectedMultipleNameDefinition, this, &WorkSpaceWidget::onDetectedMultipleNameDefinition);
     connect(ui->treeView, &QTreeView::clicked, this, &WorkSpaceWidget::currentItemChanged);
 }
 
@@ -199,6 +200,11 @@ void WorkSpaceWidget::onDataChanged(const QModelIndex &topLeft, const QModelInde
             workSpaceItem->setEdited(true);
         }
     }
+}
+
+void WorkSpaceWidget::onDetectedMultipleNameDefinition(const QString &message)
+{
+    Globals::showMessage(QMessageBox::Critical, "WorkSpace", message);
 }
 
 void WorkSpaceWidget::currentItemChanged()

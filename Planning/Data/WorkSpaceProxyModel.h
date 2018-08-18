@@ -1,7 +1,7 @@
 #ifndef WORKSPACEPROXYMODEL_H
 #define WORKSPACEPROXYMODEL_H
 
-#include "../BaseProxyModel.h"
+#include "BaseProxyModel.h"
 
 class WorkSpaceProxyModel : public BaseProxyModel
 {

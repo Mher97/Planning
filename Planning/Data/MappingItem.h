@@ -1,7 +1,7 @@
 #ifndef MAPPINGITEM_H
 #define MAPPINGITEM_H
 
-#include "../BaseItem.h"
+#include "BaseItem.h"
 
 class MappingItem : public BaseItem
 {

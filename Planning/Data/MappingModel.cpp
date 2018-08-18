@@ -1,5 +1,5 @@
 #include "MappingModel.h"
-#include "DataReading/MappingItem.h"
+#include "MappingItem.h"
 
 MappingModel::MappingModel(QObject *parent) : BaseModel(parent)
 {

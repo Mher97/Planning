@@ -28,6 +28,30 @@ Qt::ItemFlags WorkSpaceItem::flags(const QModelIndex &index) const
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
+QVariant WorkSpaceItem::data(int column, int role) const
+{
+    return BaseItem::data(column, role);
+}
+
+bool WorkSpaceItem::setData(int column, const QVariant &value, int role)
+{
+    if(column == 0 && !m_itemData.empty())
+    {
+        QString name = value.toString().trimmed();
+        if(name.isEmpty()){
+            return false;
+        }
+        if(nameIsAllowed(name)){
+            setName(name);
+            return true;
+        }else{
+            throw MultipleNameDefinition(QString("Item with name '%1' already exists.").arg(name));
+        }
+    }else{
+        return BaseItem::setData(column, value, role);
+    }
+}
+
 void WorkSpaceItem::setState(const int state)
 {
     m_state = state;
@@ -77,7 +101,3 @@ bool WorkSpaceItem::isDeleted() const
 {
     return m_deleted;
 }
-
-
-
-

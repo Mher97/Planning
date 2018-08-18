@@ -1,7 +1,7 @@
 #ifndef MAPPINGPROXYMODEL_H
 #define MAPPINGPROXYMODEL_H
 
-#include "../BaseProxyModel.h"
+#include "BaseProxyModel.h"
 
 class MappingProxyModel : public BaseProxyModel
 {

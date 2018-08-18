@@ -1,7 +1,7 @@
 #ifndef PLANNINGMODEL_H
 #define PLANNINGMODEL_H
 
-#include "../BaseModel.h"
+#include "BaseModel.h"
 
 class TaskInfo;
 
