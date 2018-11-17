@@ -256,7 +256,7 @@ void MainWindow::handleResult(const std::vector<std::vector<const TaskInfo*>>& r
         }
         passedData.push_back(passedList);
     }
-    m_planningWidget->updatePlaningData(passedData);
+    m_planningWidget->updatePlanningData(passedData);
     m_chartsWidget->updateCharts(passedData);
 }
 

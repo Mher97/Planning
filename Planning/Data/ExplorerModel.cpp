@@ -1,21 +1,21 @@
-#include "WorkSpaceModel.h"
-#include "BaseItem.h"
+#include "ExplorerModel.h"
+#include "ExplorerItem.h"
 #include "QDebug"
 
-WorkSpaceModel::WorkSpaceModel(QObject *parent) : BaseModel(parent)
+ExplorerModel::ExplorerModel(QObject *parent) : BaseModel(parent)
 {
 
 }
 
-WorkSpaceModel::~WorkSpaceModel()
+ExplorerModel::~ExplorerModel()
 {
 
 }
 
-bool WorkSpaceModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool ExplorerModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     bool result = false;
-    BaseItem* item = getItem(index);
+    ExplorerItem* item = BaseModel::itemByIndexAs<ExplorerItem>(index);
     try{
         result = item->setData(index.column(), value, role);
     }catch(std::exception& ex){

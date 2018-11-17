@@ -12,26 +12,32 @@ PlanningModel::~PlanningModel()
 
 }
 
-void PlanningModel::constructTree(const QList<QList<const TaskInfo*>>& data)
+int PlanningModel::columnCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent);
+    return COLUMN_COUNT;
+}
+
+void PlanningModel::constructTree(const QList<QList<const TaskInfo*>>& data, const std::function<QColor(const int)>& colorIndexer)
 {
     clearModel();
     if (data.isEmpty())
         return;
     int phaseNum = 1;
-    auto rootItem = new PlanningItem();
-    rootItem->setName(ItemType::ItemTypetoString(ItemType::Type::PlanningItem));
+    auto rootItem = new PlanningItem(ItemType::ItemTypetoString(ItemType::Type::PlanningItem));
     insertItem(rootItem);
     foreach(const auto& phase, data){
-        auto phaseItem = new PlanningItem(phaseNum);
-        phaseItem->setName("Phase(" + QString::number(phaseNum) + ")");
-        insertItem(phaseItem, phaseNum - 1, itemIndex(rootItem));
+        auto phaseColor = colorIndexer(phaseNum);
+        auto planningAllItem = new PlanningItem("Phase(" + QString::number(phaseNum) + ")", 0, 0, phaseNum, phaseColor);
+        insertItem(planningAllItem, phaseNum - 1, itemIndex(rootItem));
         int position = 0;
         foreach(const auto& taskInfo, phase){
-            auto taskItem= new PlanningItem(phaseNum);
-            taskItem->setName(QString::fromStdString(taskInfo->TaskId));
-            taskItem->setData(PlanningItem::START_COLUMN, QString("\t") + QString::number(taskInfo->StartTime), Qt::EditRole);
-            taskItem->setData(PlanningItem::FINISH_COLUMN, QString("\t") +QString::number(taskInfo->FinishTime), Qt::EditRole);
-            insertItem(taskItem, position, itemIndex(phaseItem));
+            auto planningItem = new PlanningItem(QString::fromStdString(taskInfo->TaskId),
+                                                 taskInfo->StartTime,
+                                                 taskInfo->FinishTime,
+                                                 phaseNum,
+                                                 phaseColor);
+            insertItem(planningItem, position, itemIndex(planningAllItem));
             ++position;
         }
         ++phaseNum;

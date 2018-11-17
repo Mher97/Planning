@@ -1,14 +1,14 @@
-#ifndef WORKSPACEMODEL_H
-#define WORKSPACEMODEL_H
+#ifndef EXPLORERMODEL_H
+#define EXPLORERMODEL_H
 
 #include "BaseModel.h"
 
-class WorkSpaceModel : public BaseModel
+class ExplorerModel : public BaseModel
 {
     Q_OBJECT
     public:
-        explicit WorkSpaceModel(QObject *parent = nullptr);
-        virtual ~WorkSpaceModel();
+        explicit ExplorerModel(QObject *parent = nullptr);
+        virtual ~ExplorerModel();
         virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     signals:
         void detectedMultipleNameDefinition(const QString& message);

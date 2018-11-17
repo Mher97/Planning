@@ -7,6 +7,7 @@
 #include "FilterItem.h"
 #include "../Engine/Shceduler.h"
 #include <QListView>
+#include "../Globals.h"
 
 PlanningWidget::PlanningWidget(QWidget *parent) :
     QWidget(parent),
@@ -23,11 +24,11 @@ PlanningWidget::~PlanningWidget()
     delete ui;
 }
 
-void PlanningWidget::updatePlaningData(const QList<QList<const TaskInfo*>>& data)
+void PlanningWidget::updatePlanningData(const QList<QList<const TaskInfo*>>& data)
 {
     ui->filterComboBox->clear();
     ui->treeView->setUpdatesEnabled(false);
-    m_planningModel->constructTree(data);
+    m_planningModel->constructTree(data, Globals::getColorForPhase);
     ui->treeView->expandAll();
     ui->treeView->setUpdatesEnabled(true);
     fillFilterComboBox(data);
@@ -47,7 +48,7 @@ void PlanningWidget::initModelView()
     m_planningProxyModel = new PlanningProxyModel();
     m_planningProxyModel->setSourceModel(m_planningModel);
     ui->treeView->setModel(m_planningProxyModel);
-    ui->treeView->setColumnWidth(PlanningItem::ID_COLUMN, 300);
+    ui->treeView->setColumnWidth(PlanningItem::NAME_COLUMN, 300);
     ui->treeView->setColumnWidth(PlanningItem::START_COLUMN, 300);
     ui->treeView->setColumnWidth(PlanningItem::FINISH_COLUMN, 300);
     ui->treeView->header()->setSortIndicator(-1, Qt::AscendingOrder);

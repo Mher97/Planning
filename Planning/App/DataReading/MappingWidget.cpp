@@ -47,7 +47,7 @@ void MappingWidget::initModel()
     m_checkBoxItemDelegate = new CheckBoxItemDelegate();
     m_proxyModel->setSourceModel(m_mappingModel);
     ui->treeView->setModel(m_proxyModel);
-    for (int column = 1; column < MappingProxyModel::COLUMN_COUNT; ++column){
+    for (int column = 1; column < m_mappingModel->columnCount(); ++column){
         ui->treeView->setItemDelegateForColumn(column, m_checkBoxItemDelegate);
         ui->treeView->setColumnWidth(column, 200);
     }
@@ -111,9 +111,10 @@ QHash<QString, QPair<int, QStringList>> MappingWidget::readData()
     m_mapping.clear();
     for (int i = 0 ; i < m_mappingModel->rowCount(); ++i){
         QModelIndex index = m_mappingModel->index(i, 0);
-        MappingItem* mappingItem = static_cast<MappingItem*>(m_mappingModel->getItem(index));
+        //MappingItem* mappingItem = static_cast<MappingItem*>(m_mappingModel->getItem(index));
+        MappingItem* mappingItem = BaseModel::itemByIndexAs<MappingItem>(index);
         if (mappingItem != nullptr){
-            for (int j = 1; j < MappingProxyModel::COLUMN_COUNT; ++j){
+            for (int j = 1; j < m_mappingModel->columnCount(); ++j){
                 if (mappingItem->data(j, Qt::CheckStateRole).toBool()){
                     m_mapping[MappingItem::DATA_TYPES(j)] = mappingItem->getColumnNumber();
                     break;

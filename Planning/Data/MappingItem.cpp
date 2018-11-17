@@ -17,7 +17,11 @@ QString MappingItem::dataTypesToString(MappingItem::DATA_TYPES type)
     }
 }
 
-MappingItem::MappingItem(BaseItem *parent) : BaseItem(parent), m_columnNumber(-1)
+MappingItem::MappingItem(BaseItem *parent) :
+    BaseItem(parent),
+    m_mappingVector(QVector<QVariant>(3)),
+    m_rawColName(),
+    m_columnNumber(-1)
 {
     m_itemType = ItemType::Type::MappingItem;
 }
@@ -47,14 +51,23 @@ int MappingItem::getColumnNumber() const
     return m_columnNumber;
 }
 
+MappingItem *MappingItem::clone() const
+{
+    return new MappingItem(*this);
+}
+
+int MappingItem::columnCount() const
+{
+    return m_mappingVector.size() + 1;
+}
 
 QVariant MappingItem::data(int column, int role) const
 {
-    if (column < 0 || column >= m_itemData.size())
+    if (column < 0 || column >= columnCount())
            return QVariant();
     if (role == Qt::CheckStateRole){
         if(column > static_cast<int>(MappingItem::DATA_TYPES::COLUMN_RAW_NAME)){
-            return ((m_itemData[column] == Qt::Checked) ? Qt::Checked : Qt::Unchecked );
+            return ((m_mappingVector[column - 1] == Qt::Checked) ? Qt::Checked : Qt::Unchecked );
         }else{
             return QVariant();
         }
@@ -69,10 +82,13 @@ QVariant MappingItem::data(int column, int role) const
 
 bool MappingItem::setData(int column, const QVariant &value, int role)
 {
-    if (column < 0 || column >= m_itemData.size())
+    if (column < 0 || column >= columnCount())
            return false;
+    if (column == 0){
+        setName(value.toString());
+    }
     if ((role == Qt::CheckStateRole)&& (column > static_cast<int>(MappingItem::DATA_TYPES::COLUMN_RAW_NAME))) {
-        m_itemData[column] = value;
+        m_mappingVector[column - 1] = value;
         return true;
     }
     return false;
@@ -87,9 +103,9 @@ Qt::ItemFlags MappingItem::flags(const QModelIndex &index) const
 
 void MappingItem::clearSelections()
 {
-    int start = static_cast<int>(MappingItem::DATA_TYPES::COLUMN_RAW_NAME);
+    int start = static_cast<int>(MappingItem::DATA_TYPES::DATA_TASK_CODE);
     int end = static_cast<int>(MappingItem::DATA_TYPES::DATA_DEPENDENCE);
     for (int i = start; i <= end; ++i) {
-        m_itemData[i] = Qt::Unchecked;
+        m_mappingVector[i] = Qt::Unchecked;
     }
 }

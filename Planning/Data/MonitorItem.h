@@ -1,9 +1,9 @@
 #ifndef MONITORITEM_H
 #define MONITORITEM_H
 
-#include "WorkSpaceItem.h"
+#include "ExplorerItem.h"
 
-class MonitorItem : public WorkSpaceItem
+class MonitorItem : public ExplorerItem
 {
     Q_OBJECT
     public:
@@ -14,13 +14,13 @@ class MonitorItem : public WorkSpaceItem
         };
 
         static const int IMPORTED_DATA_COLUMN = 1;
-        MonitorItem(const QVector<QVariant>& data, BaseItem *parent = nullptr, const int state = WorkSpaceItem::ISNEW);
+        MonitorItem(BaseItem *parent = nullptr, const ItemState = ItemState::NEW);
         MonitorItem(const MonitorItem& src);
         void resetDataMapping();
         virtual ~MonitorItem();
-        virtual MonitorItem* clone() const;
-        QIcon icon() const;
-        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+        virtual MonitorItem* clone() const override;
+        virtual QIcon icon() const override;
+        virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
         void setCurrentData(const QByteArray &data);
         QByteArray getCurrentData()const;
         bool hasData()const;

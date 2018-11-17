@@ -1,13 +1,13 @@
 #ifndef PROJECTITEM_H
 #define PROJECTITEM_H
 
-#include "WorkSpaceItem.h"
+#include "ExplorerItem.h"
 
-class ProjectItem : public WorkSpaceItem
+class ProjectItem : public ExplorerItem
 {
     Q_OBJECT
     public:
-        ProjectItem(const QVector<QVariant>& data, BaseItem *parent = nullptr, const int state = WorkSpaceItem::ISNEW);
+        ProjectItem(BaseItem *parent = nullptr, const ItemState = ItemState::NEW);
         ProjectItem(const ProjectItem& src);
         virtual ~ProjectItem();
         virtual ProjectItem* clone() const override;

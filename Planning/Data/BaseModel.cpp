@@ -1,7 +1,6 @@
 #include "BaseModel.h"
 #include <QStringList>
 #include <QFile>
-//#include <QMessageBox>
 #include "BaseItem.h"
 
 BaseModel::BaseModel(QObject *parent)
@@ -16,10 +15,20 @@ BaseModel::~BaseModel()
 
 }
 
-int BaseModel::columnCount(const QModelIndex& parent) const
+void BaseModel::initModel()
 {
-    Q_UNUSED(parent);
-    return 100;
+    initRootItem();
+}
+
+bool BaseModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    bool result = false;
+    BaseItem* item = getItem(index);
+    result = item->setData(index.column(), value,role );
+    if (result){
+        emit dataChanged(index, index);
+    }
+    return result;
 }
 
 QVariant BaseModel::data(const QModelIndex &index, int role) const
@@ -31,26 +40,20 @@ QVariant BaseModel::data(const QModelIndex &index, int role) const
     return item->data(index.column(),role);
 }
 
-Qt::ItemFlags BaseModel::flags(const QModelIndex &index) const
+bool BaseModel::setHeaderData(int section, Qt::Orientation orientation,
+                              const QVariant &value, int role)
 {
-    if (!index.isValid()){
-        return Qt::NoItemFlags;
+    if (role != Qt::EditRole || orientation != Qt::Horizontal){
+        return false;
     }
-    BaseItem *item = getItem(index);
-    return item->flags(index);
-}
-
-BaseItem* BaseModel::getItem(const QModelIndex &index) const
-{
-    if (index.isValid())
-    {
-        Q_ASSERT(NULL != index.internalPointer());
-        BaseItem *item = static_cast<BaseItem*>(index.internalPointer());
-        if (item){
-            return item;
-        }
+    if( m_rootItem == nullptr ){
+        return false;
     }
-    return m_rootItem;
+    bool result = m_rootItem->setData(section,value,role);
+    if (result){
+        emit headerDataChanged(orientation, section, section);
+    }
+    return result;
 }
 
 QVariant BaseModel::headerData(int section, Qt::Orientation orientation,int role) const
@@ -80,6 +83,42 @@ QModelIndex BaseModel::index(int row, int column, const QModelIndex &parent) con
         return childItem != nullptr ? createIndex(row, column, childItem) : QModelIndex();
 }
 
+QModelIndex BaseModel::parent(const QModelIndex &index) const
+{
+    if (!index.isValid()){
+        return QModelIndex();
+    }
+    BaseItem *childItem = getItem(index);
+    BaseItem *parentItem = childItem->parent();
+    if (parentItem == nullptr){
+        return QModelIndex();
+    }
+    if (parentItem == m_rootItem){
+        return QModelIndex();
+    }
+    return createIndex(parentItem->childNumber(), 0, parentItem);
+}
+
+bool BaseModel::insertRows(int position, int rows, const QModelIndex &parent)
+{
+    BaseItem *parentItem = getItem(parent);
+    bool success = false;
+    beginInsertRows(parent, position, position + rows - 1);
+    success = parentItem->insertChildren(position, rows);
+    endInsertRows();
+    return success;
+}
+
+bool BaseModel::removeRows(int position, int rows, const QModelIndex &parent)
+{
+    BaseItem *parentItem = getItem(parent);
+    bool success = true;
+    beginRemoveRows(parent, position, position + rows - 1);
+    success = parentItem->removeChildren(position, rows);
+    endRemoveRows();
+    return success;
+}
+
 bool BaseModel::insertColumns(int position, int columns, const QModelIndex &parent)
 {
     Q_ASSERT(m_rootItem != nullptr);
@@ -90,6 +129,41 @@ bool BaseModel::insertColumns(int position, int columns, const QModelIndex &pare
     return success;
 }
 
+bool BaseModel::removeColumns(int position, int columns, const QModelIndex &parent)
+{
+    Q_ASSERT(m_rootItem != nullptr);
+    bool success;
+    beginRemoveColumns(parent, position, position + columns - 1);
+    success = m_rootItem->insertColumns(position, columns);
+    endRemoveColumns();
+    return success;
+}
+
+int BaseModel::rowCount(const QModelIndex &parent) const
+{
+    BaseItem *parentItem = getItem(parent);
+    return parentItem != nullptr ? parentItem->childCount() : 0;
+}
+
+int BaseModel::columnCount(const QModelIndex& parent) const
+{
+    Q_UNUSED(parent);
+    return m_rootItem->columnCount();
+}
+
+Qt::ItemFlags BaseModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid()){
+        return Qt::NoItemFlags;
+    }
+    BaseItem *item = getItem(index);
+    return item->flags(index);
+}
+
+QModelIndex BaseModel::createIndex(int row, int column, BaseItem* data) const
+{
+    return QAbstractItemModel::createIndex(row, column, data);
+}
 
 QModelIndex BaseModel::insertItem(BaseItem* item)
 {
@@ -111,83 +185,9 @@ QModelIndex BaseModel::insertItem(BaseItem* item, int position, const QModelInde
     return index(position, 0, parentIndex);
 }
 
-bool BaseModel::insertRows(int position, int rows, const QModelIndex &parent)
+void BaseModel::initRootItem()
 {
-    BaseItem *parentItem = getItem(parent);
-    bool success = false;
-    beginInsertRows(parent, position, position + rows - 1);
-    success = parentItem->insertChildren(position, rows, m_rootItem->columnCount());
-    endInsertRows();
-    return success;
-}
-
-QModelIndex BaseModel::parent(const QModelIndex &index) const
-{
-    if (!index.isValid()){
-        return QModelIndex();
-    }
-    BaseItem *childItem = getItem(index);
-    BaseItem *parentItem = childItem->parent();
-    if (parentItem == nullptr){
-        return QModelIndex();
-    }
-    if (parentItem == m_rootItem){
-        return QModelIndex();
-    }
-    return createIndex(parentItem->childNumber(), 0, parentItem);
-}
-
-bool BaseModel::removeRows(int position, int rows, const QModelIndex &parent)
-{
-    BaseItem *parentItem = getItem(parent);
-    bool success = true;
-    beginRemoveRows(parent, position, position + rows - 1);
-    success = parentItem->removeChildren(position, rows);
-    endRemoveRows();
-    return success;
-}
-
-int BaseModel::rowCount(const QModelIndex &parent) const
-{
-    BaseItem *parentItem = getItem(parent);
-    return parentItem != nullptr ? parentItem->childCount() : 0;
-}
-
-bool BaseModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    bool result = false;
-    BaseItem* item = getItem(index);
-    result = item->setData(index.column(), value,role );
-    if (result){
-        emit dataChanged(index, index);
-    }
-    return result;
-}
-
-bool BaseModel::setHeaderData(int section, Qt::Orientation orientation,
-                              const QVariant &value, int role)
-{
-    if (role != Qt::EditRole || orientation != Qt::Horizontal){
-        return false;
-    }
-    if( m_rootItem == nullptr ){
-        return false;
-    }
-    bool result = m_rootItem->setData(section,value,role);
-    if (result){
-        emit headerDataChanged(orientation, section, section);
-    }
-    return result;
-}
-
-QModelIndex BaseModel::createIndex(int row, int column, BaseItem* data) const
-{
-    return QAbstractItemModel::createIndex(row, column, data);
-}
-
-void BaseModel::initRootItem(const QVector<QVariant>& data)
-{
-    m_rootItem = new BaseItem(data);
+    m_rootItem = new BaseItem();
 }
 
 ItemType::Type BaseModel::itemType(const QModelIndex& index) const
@@ -263,19 +263,6 @@ BaseItem* BaseModel::getRootItem()const
     return m_rootItem;
 }
 
-void BaseModel::initModel()
-{
-    QVector<QVariant> data;
-    data.append(tr(""));
-    initRootItem(data);
-}
-
-void BaseModel::currentRowChanged(const QModelIndex &current, const QModelIndex &previous)
-{
-    Q_UNUSED(current);
-    Q_UNUSED(previous);
-}
-
 void BaseModel::clearModel()
 {
     int RowCount = rowCount();
@@ -283,4 +270,17 @@ void BaseModel::clearModel()
         QModelIndex index = this->index(0,0);
         deleteItem(index);
     }
+}
+
+BaseItem* BaseModel::getItem(const QModelIndex &index) const
+{
+    if (index.isValid())
+    {
+        Q_ASSERT(nullptr != index.internalPointer());
+        BaseItem *item = static_cast<BaseItem*>(index.internalPointer());
+        if (item){
+            return item;
+        }
+    }
+    return m_rootItem;
 }

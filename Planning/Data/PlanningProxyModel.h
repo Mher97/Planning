@@ -6,7 +6,6 @@
 class PlanningProxyModel : public BaseProxyModel
 {
     public:
-        static const int COLUMN_COUNT = 3;
         explicit PlanningProxyModel(QObject *parent = nullptr);
         virtual ~PlanningProxyModel();
         void setFilterVector(const QVector<bool>& filterVector);

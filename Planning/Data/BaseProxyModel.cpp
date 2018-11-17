@@ -34,7 +34,8 @@ QVariant BaseProxyModel::data(const QModelIndex &index, int role) const
     if(dataModel == nullptr){
         return QVariant();
     }
-    BaseItem *item = dataModel->getItem(souIndex);
+    //BaseItem *item = dataModel->getItem(souIndex);
+    BaseItem* item = BaseModel::itemByIndexAs<BaseItem>(souIndex);
     if(souIndex.column() == 0 && role == Qt::CheckStateRole){
         return QVariant();
     }

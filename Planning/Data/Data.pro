@@ -27,7 +27,6 @@ SOURCES += \
     BaseModel.cpp \
     BaseItem.cpp \
     BaseProxyModel.cpp \
-    WorkSpaceItem.cpp \
     BranchItem.cpp \
     ProjectItem.cpp \
     MonitorItem.cpp \
@@ -39,15 +38,15 @@ SOURCES += \
     MappingItem.cpp \
     FilterModel.cpp \
     FilterItem.cpp \
-    WorkSpaceProxyModel.cpp \
-    WorkSpaceModel.cpp
+    ExplorerItem.cpp \
+    ExplorerModel.cpp \
+    ExplorerProxyModel.cpp
 
 HEADERS += \
     BaseModel.h \
     ItemType.h \
     BaseItem.h \
     BaseProxyModel.h \
-    WorkSpaceItem.h \
     BranchItem.h \
     ProjectItem.h \
     MonitorItem.h \
@@ -59,8 +58,9 @@ HEADERS += \
     MappingItem.h \
     FilterModel.h \
     FilterItem.h \
-    WorkSpaceProxyModel.h \
-    WorkSpaceModel.h
+    ExplorerItem.h \
+    ExplorerModel.h \
+    ExplorerProxyModel.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

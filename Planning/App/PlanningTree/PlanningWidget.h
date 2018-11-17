@@ -20,7 +20,7 @@ class PlanningWidget : public QWidget
     public:
         explicit PlanningWidget(QWidget *parent = nullptr);
         ~PlanningWidget();
-        void updatePlaningData(const QList<QList<const TaskInfo*>>& data);
+        void updatePlanningData(const QList<QList<const TaskInfo*>>& data);
     private:
         Ui::PlanningWidget *ui;
         PlanningModel *m_planningModel;

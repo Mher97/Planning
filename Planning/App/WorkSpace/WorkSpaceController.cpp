@@ -1,11 +1,11 @@
 #include "WorkSpaceController.h"
 #include "../DbManager.h"
 #include "../Data/BaseModel.h"
-#include "../Data/WorkSpaceItem.h"
+#include "../Data/ExplorerItem.h"
 #include "../Data/ProjectItem.h"
 #include "../Data/BranchItem.h"
 #include "../Data/MonitorItem.h"
-#include "../Data/WorkSpaceProxyModel.h"
+#include "../Data/ExplorerProxyModel.h"
 #include "../Globals.h"
 
 const QStringList WorkSpaceController::TableNames = QStringList()<< "BranchItems"
@@ -48,7 +48,7 @@ WorkSpaceController& WorkSpaceController::getInstance()
 
 void WorkSpaceController::loadModel(BaseModel *model)
 {
-    ProjectItem *projectItem = new ProjectItem(QVector<QVariant>(model->columnCount()));
+    ProjectItem *projectItem = new ProjectItem();
     BranchItem *branchItem(nullptr);
     MonitorItem *monitorItem(nullptr);
     model->insertItem(projectItem);
@@ -73,13 +73,13 @@ void WorkSpaceController::loadModel(BaseModel *model)
     foreach(const auto& record, result){
         auto currentBranchId = record.at(BranchIdColumn).toInt();
         if (currentBranchId != 0 && currentBranchId != branchId){
-            branchItem = new BranchItem(record.mid(BranchNameColumn, BranchLength), projectItem, WorkSpaceItem::FROMBASE);
+            branchItem = new BranchItem(/*record.mid(BranchNameColumn, BranchLength),*/ projectItem, ExplorerItem::ItemState::FROMBASE);
             model->insertItem(branchItem, projectItem->childCount(), model->itemIndex(projectItem));
             branchId = currentBranchId;
         }
         auto currentMonitorId = record.at(MonitorIdColumn).toInt();
         if (currentMonitorId !=0 && monitorId  != currentMonitorId){
-            monitorItem = new MonitorItem(record.mid(MonitorNameColumn, MonitorLength), branchItem, WorkSpaceItem::FROMBASE);
+            monitorItem = new MonitorItem(/*record.mid(MonitorNameColumn, MonitorLength),*/ branchItem, ExplorerItem::ItemState::FROMBASE);
             model->insertItem(monitorItem, branchItem->childCount(), model->itemIndex(branchItem));
             monitorId = currentMonitorId;
         }
@@ -169,7 +169,8 @@ void WorkSpaceController::deleteItems(std::array<QList<int>, 2> &deletedItems)
 void WorkSpaceController::saveModel(BaseModel *model, std::array<QList<int>, 2> &deletedItems)
 {
     deleteItems(deletedItems);
-    auto rootItem = static_cast<WorkSpaceItem*>(model->getItem(model->index(0, 0)));
+    //auto rootItem = static_cast<WorkSpaceItem*>(model->getItem(model->index(0, 0)));
+    auto rootItem = BaseModel::itemByIndexAs<BaseItem>(model->index(0,0));
     if (rootItem == nullptr)
         return;
     auto branchItems = rootItem->childList();
@@ -193,10 +194,10 @@ void WorkSpaceController::saveLevel(QList<BaseItem*> Items, const ItemType::Type
     QVariantList insertParentIdList;
     QList<BaseItem*> childItems;
     foreach (auto item, Items){
-        auto workSpaceItem = static_cast<WorkSpaceItem*>(item);
+        auto workSpaceItem = static_cast<ExplorerItem*>(item);
         if (workSpaceItem == nullptr)
             continue;
-        if (workSpaceItem->getState() == WorkSpaceItem::ISNEW){
+        if (workSpaceItem->getState() == ExplorerItem::ItemState::NEW){
             insertNameList.push_back(workSpaceItem->getName());
             insertParentIdList.push_back(workSpaceItem->getParentId());
         }else{
@@ -221,11 +222,11 @@ void WorkSpaceController::saveLevel(QList<BaseItem*> Items, const ItemType::Type
     }
     auto insertId = DbManager::getInstance()->getLastInsertId().toInt() - insertNum + 1;
     foreach(auto item, Items){
-        auto workSpaceItem = static_cast<WorkSpaceItem*>(item);
+        auto workSpaceItem = static_cast<ExplorerItem*>(item);
         if (workSpaceItem == nullptr)
             continue;
-        if (workSpaceItem->getState() == WorkSpaceItem::ISNEW){
-            workSpaceItem->setState(WorkSpaceItem::FROMBASE);
+        if (workSpaceItem->getState() == ExplorerItem::ItemState::NEW){
+            workSpaceItem->setState(ExplorerItem::ItemState::FROMBASE);
             workSpaceItem->setId(insertId);
             if (workSpaceItem->itemType() == ItemType::Type::MonitorItem)
                 saveImportedData(static_cast<MonitorItem*>(workSpaceItem));
@@ -233,10 +234,10 @@ void WorkSpaceController::saveLevel(QList<BaseItem*> Items, const ItemType::Type
         }
         childItems += workSpaceItem->childList();
         foreach (auto child, workSpaceItem->childList()){
-            auto childItem = static_cast<WorkSpaceItem*>(child);
+            auto childItem = static_cast<ExplorerItem*>(child);
             if (childItem == nullptr)
                 continue;
-            if (childItem->getState() == WorkSpaceItem::ISNEW){
+            if (childItem->getState() == ExplorerItem::ItemState::NEW){
                 childItem->setParentId(workSpaceItem->getId());
             }
         }
@@ -247,12 +248,12 @@ void WorkSpaceController::saveLevel(QList<BaseItem*> Items, const ItemType::Type
     saveLevel(childItems, getNextLevelType(type));
 }
 
-void WorkSpaceController::updateItem(WorkSpaceItem *item)
+void WorkSpaceController::updateItem(ExplorerItem *item)
 {
     QString queryText;
     QMap<QString, QVariant> values;
     bool mustBeExecute = false;
-    if (item->getEdited()){
+    if (item->isDirty()){
         mustBeExecute = true;
         queryText = QString("Update %1 Set name = :name where id = '%2'").
                 arg(getTableNameByType(item->itemType())).arg(item->getId());

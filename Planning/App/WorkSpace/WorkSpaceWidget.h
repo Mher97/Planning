@@ -10,9 +10,9 @@ namespace Ui {
 class WorkSpaceWidget;
 }
 
-class WorkSpaceModel;
-class WorkSpaceProxyModel;
-class WorkSpaceItem;
+class ExplorerModel;
+class ExplorerProxyModel;
+class ExplorerItem;
 class MonitorItem;
 
 class WorkSpaceWidget : public QWidget
@@ -26,8 +26,8 @@ class WorkSpaceWidget : public QWidget
         Ui::WorkSpaceWidget *ui;
         static const int TYPES_COUNT = 2;
         static const QList<ItemType::Type> TYPES_ARRAY;
-        WorkSpaceModel *m_model;
-        WorkSpaceProxyModel *m_proxyModel;
+        ExplorerModel *m_model;
+        ExplorerProxyModel *m_proxyModel;
         std::array<QList<int>, TYPES_COUNT> m_deletedFromBase;
         QModelIndex m_currentMonitoringIndex;
         QByteArray m_monitoringData;
@@ -35,7 +35,7 @@ class WorkSpaceWidget : public QWidget
         void initUi();
         void initModel();
         void initConnections();
-        void deleteHelper(WorkSpaceItem *item);
+        void deleteHelper(ExplorerItem *item);
 
     signals:
         void workSpaceCurrentItemChanged(bool isMonitoring, bool isChangedMonitoring);

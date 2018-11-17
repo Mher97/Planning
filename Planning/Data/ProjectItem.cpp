@@ -1,15 +1,15 @@
 #include "ProjectItem.h"
 
-ProjectItem::ProjectItem(const QVector<QVariant>& data, BaseItem *parent, const int state) :
-    WorkSpaceItem(data, parent, state)
+ProjectItem::ProjectItem(BaseItem *parent, const ExplorerItem::ItemState state) :
+    ExplorerItem(parent, state)
 {
-    if (m_state == WorkSpaceItem::ISNEW){
-        m_itemData[WorkSpaceItem::NAME_COLUMN] = ItemType::ItemTypetoString(ItemType::Type::ProjectItem);
+    if (m_state == ItemState::NEW){
+        m_name = ItemType::ItemTypetoString(ItemType::Type::ProjectItem);
     }
     m_itemType = ItemType::Type::ProjectItem;
 }
 
-ProjectItem::ProjectItem(const ProjectItem &src) : WorkSpaceItem(src)
+ProjectItem::ProjectItem(const ProjectItem &src) : ExplorerItem(src)
 {
 
 }

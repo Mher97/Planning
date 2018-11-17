@@ -1,17 +1,21 @@
 #include "MonitorItem.h"
 
-MonitorItem::MonitorItem(const QVector<QVariant>& data, BaseItem *parent, const int state)
-    : WorkSpaceItem(data, parent, state), m_hasData(false), m_hasMapping(false),
-      m_isMappingChanged(false), m_isDataChanged(false), m_isFirstSelection(true)
+MonitorItem::MonitorItem(BaseItem *parent, const ItemState state)
+    : ExplorerItem(parent, state),
+      m_hasData(false),
+      m_hasMapping(false),
+      m_isMappingChanged(false),
+      m_isDataChanged(false),
+      m_isFirstSelection(true)
 {
     m_itemType = ItemType::Type::MonitorItem;
-    if (m_state == WorkSpaceItem::ISNEW){
-        m_itemData[WorkSpaceItem::NAME_COLUMN] = ItemType::ItemTypetoString(ItemType::Type::MonitorItem);
+    if (m_state == ItemState::NEW){
+        m_name = ItemType::ItemTypetoString(ItemType::Type::MonitorItem);
     }
     resetDataMapping();
 }
 
-MonitorItem::MonitorItem(const MonitorItem& src) : WorkSpaceItem(src)
+MonitorItem::MonitorItem(const MonitorItem& src) : ExplorerItem(src)
 {
     m_currentData = src.m_currentData;
 }

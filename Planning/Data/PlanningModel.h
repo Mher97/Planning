@@ -2,6 +2,7 @@
 #define PLANNINGMODEL_H
 
 #include "BaseModel.h"
+#include <functional>
 
 class TaskInfo;
 
@@ -11,7 +12,10 @@ class PlanningModel : public BaseModel
     public:
         explicit PlanningModel(QObject *parent = nullptr);
         virtual ~PlanningModel();
-        void constructTree(const QList<QList<const TaskInfo*>>& data);
+        virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+        void constructTree(const QList<QList<const TaskInfo*>>& data, const std::function<QColor(const int)>& colorIndexer);
+    private:
+        static const int COLUMN_COUNT = 3;
 };
 
 #endif // PLANNINGMODEL_H

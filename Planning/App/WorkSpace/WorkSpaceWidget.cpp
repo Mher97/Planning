@@ -1,7 +1,7 @@
 #include "WorkSpaceWidget.h"
 #include "ui_WorkSpaceWidget.h"
-#include "../Data/WorkSpaceModel.h"
-#include "../Data/WorkSpaceProxyModel.h"
+#include "../Data/ExplorerModel.h"
+#include "../Data/ExplorerProxyModel.h"
 #include "WorkSpaceController.h"
 #include "../Data/ProjectItem.h"
 #include "../Data/BranchItem.h"
@@ -41,7 +41,8 @@ void WorkSpaceWidget::saveImportedFile(const QString &fileName)
     }else{
         QModelIndex index = m_proxyModel->mapToSource(ui->treeView->currentIndex());
         //index = m_model->ancestorItemByType(index, ItemType::Type::MonitorItem);
-        MonitorItem *item = static_cast<MonitorItem*>(m_model->getItem(index));
+        //MonitorItem *item = static_cast<MonitorItem*>(m_model->getItem(index));
+        MonitorItem* item = BaseModel::itemByIndexAs<MonitorItem>(index);
         if (item == nullptr){
             return;
         }
@@ -49,7 +50,7 @@ void WorkSpaceWidget::saveImportedFile(const QString &fileName)
         byteArray = byteArray.toBase64();
         byteArray = qCompress(byteArray);
         item->setCurrentData(byteArray);
-        if (item->getState() == WorkSpaceItem::FROMBASE){
+        if (item->getState() == ExplorerItem::ItemState::FROMBASE){
             item->setDataChanged(true);
         }
         emit monitoringDataChanged(item);
@@ -63,9 +64,9 @@ void WorkSpaceWidget::initUi()
 
 void WorkSpaceWidget::initModel()
 {
-    m_model = new WorkSpaceModel(this);
+    m_model = new ExplorerModel(this);
     m_model->initModel();
-    m_proxyModel = new WorkSpaceProxyModel(this);
+    m_proxyModel = new ExplorerProxyModel(this);
     m_proxyModel->setSourceModel(m_model);
     ui->treeView->setModel(m_proxyModel);
 }
@@ -76,25 +77,25 @@ void WorkSpaceWidget::initConnections()
     connect(ui->tbDelete, &QToolButton::clicked, this, &WorkSpaceWidget::onTbDeleteClicked);
     connect(ui->tbLoad, &QToolButton::clicked, this, &WorkSpaceWidget::onTbLoadClicked);
     connect(ui->tbSave, &QToolButton::clicked, this, &WorkSpaceWidget::onTbSaveClicked);
-    connect(m_model, &WorkSpaceModel::dataChanged, this, &WorkSpaceWidget::onDataChanged);
-    connect(m_model, &WorkSpaceModel::detectedMultipleNameDefinition, this, &WorkSpaceWidget::onDetectedMultipleNameDefinition);
+    connect(m_model, &ExplorerModel::dataChanged, this, &WorkSpaceWidget::onDataChanged);
+    connect(m_model, &ExplorerModel::detectedMultipleNameDefinition, this, &WorkSpaceWidget::onDetectedMultipleNameDefinition);
     connect(ui->treeView, &QTreeView::clicked, this, &WorkSpaceWidget::currentItemChanged);
 }
 
 void WorkSpaceWidget::onTbNewClicked()
 {
-    WorkSpaceItem *parent(nullptr);
-    QVector<QVariant> data(m_model->columnCount());
+    ExplorerItem *parent(nullptr);
     QModelIndex index;
     index = m_proxyModel->mapToSource(ui->treeView->currentIndex());
     if (index.row() != -1 && index.column() != -1)
     {
-        parent = static_cast<WorkSpaceItem*>(m_model->getItem(index));
+        //parent = static_cast<WorkSpaceItem*>(m_model->getItem(index));
+        parent = BaseModel::itemByIndexAs<ExplorerItem>(index);
         ItemType::Type parentType = parent->itemType();
         switch(parentType)
         {
             case ItemType::Type::ProjectItem:{
-                BranchItem *branchItem = new BranchItem(data);
+                BranchItem *branchItem = new BranchItem();
                 branchItem->setName(parent->uniqueNameForChild(branchItem->getName(), branchItem->itemType()));
                 QModelIndex branchIndex = m_model->insertItem(branchItem, parent->childCount(), index);
                 ui->treeView->expand(m_proxyModel->mapFromSource(branchIndex));
@@ -102,7 +103,7 @@ void WorkSpaceWidget::onTbNewClicked()
             }
             case ItemType::Type::BranchItem:{
                 ui->treeView->expand(m_proxyModel->mapFromSource(index));
-                MonitorItem *monitorItem = new MonitorItem(data, parent);
+                MonitorItem *monitorItem = new MonitorItem(parent);
                 monitorItem->setName(parent->uniqueNameForChild(monitorItem->getName(), monitorItem->itemType()));
                 monitorItem->setParentId(parent->getId());
                 QModelIndex monitorIndex = m_model->insertItem(monitorItem, parent->childCount(), index);
@@ -113,7 +114,7 @@ void WorkSpaceWidget::onTbNewClicked()
                 break;
         }
     }else{
-        ProjectItem *projectItem = new ProjectItem(data);
+        ProjectItem *projectItem = new ProjectItem();
         QModelIndex projectIndex = m_model->insertItem(projectItem, m_model->getRootItem()->childCount(), index);
         ui->treeView->expand(m_proxyModel->mapFromSource(projectIndex));
         ui->tbNew->setEnabled(false);
@@ -123,7 +124,8 @@ void WorkSpaceWidget::onTbNewClicked()
 void WorkSpaceWidget::onTbDeleteClicked()
 {
     QModelIndex index = m_proxyModel->mapToSource(ui->treeView->currentIndex());
-    WorkSpaceItem *item = static_cast<WorkSpaceItem*>(m_model->getItem(index));
+    //WorkSpaceItem *item = static_cast<WorkSpaceItem*>(m_model->getItem(index));
+    ExplorerItem *item = BaseModel::itemByIndexAs<ExplorerItem>(index);
     if (item == nullptr)
         return;
     ItemType::Type itemType = item->itemType();
@@ -138,12 +140,12 @@ void WorkSpaceWidget::onTbDeleteClicked()
     currentItemChanged();
 }
 
-void WorkSpaceWidget::deleteHelper(WorkSpaceItem *item)
+void WorkSpaceWidget::deleteHelper(ExplorerItem *item)
 {
     item->setDeleted(true);
-    if(item->getState() == WorkSpaceItem::FROMBASE)
+    if(item->getState() == ExplorerItem::ItemState::FROMBASE)
     {
-        item->setState(WorkSpaceItem::DELETEDFROMBASE);
+        item->setState(ExplorerItem::ItemState::DELETEDFROMBASE);
         ItemType::Type itemType = item->itemType();
         for (int i = 0; i < TYPES_COUNT; ++i)
         {
@@ -155,7 +157,7 @@ void WorkSpaceWidget::deleteHelper(WorkSpaceItem *item)
     }
     for (int i = 0; i < item->childCount(); ++i)
     {
-        WorkSpaceItem *child = static_cast<WorkSpaceItem*>(item->child(i));
+        ExplorerItem *child = static_cast<ExplorerItem*>(item->child(i));
         if (child != nullptr && !child->isDeleted()){
             deleteHelper(child);
         }
@@ -195,9 +197,9 @@ void WorkSpaceWidget::onDataChanged(const QModelIndex &topLeft, const QModelInde
 {
     Q_UNUSED(roles)
     if (topLeft == bottomRight){
-        auto workSpaceItem = static_cast<WorkSpaceItem*>(m_model->getItem(topLeft));
-        if (workSpaceItem != nullptr){
-            workSpaceItem->setEdited(true);
+        auto explorerItem = BaseModel::itemByIndexAs<ExplorerItem>(topLeft);
+        if (explorerItem != nullptr){
+            explorerItem->setDirty(true);
         }
     }
 }
@@ -215,7 +217,8 @@ void WorkSpaceWidget::currentItemChanged()
     ItemType::Type itemType;
     if (index.isValid())
     {
-        itemType = m_model->getItem(index)->itemType();
+        //itemType = m_model->getItem(index)->itemType();
+        itemType = BaseModel::itemByIndexAs<ExplorerItem>(index)->itemType();
         switch(itemType){
             case ItemType::Type::ProjectItem:
             case ItemType::Type::BranchItem:
@@ -252,7 +255,8 @@ void WorkSpaceWidget::currentItemChanged()
             isMonitoringChanged = false;
         }
         m_currentMonitoringIndex = monitorIndex;
-        currentMonitor = dynamic_cast<MonitorItem*>(m_model->getItem(monitorIndex));
+        //currentMonitor = dynamic_cast<MonitorItem*>(m_model->getItem(monitorIndex));
+        currentMonitor = BaseModel::itemByIndexAs<MonitorItem>(monitorIndex);
         if(currentMonitor == nullptr){
             return;
         }
@@ -262,7 +266,8 @@ void WorkSpaceWidget::currentItemChanged()
 
 void WorkSpaceWidget::getMonitoringData(const QModelIndex &monitoringIndex)
 {
-    MonitorItem *monitorItem = static_cast<MonitorItem*>(m_model->getItem(monitoringIndex));
+    //MonitorItem *monitorItem = static_cast<MonitorItem*>(m_model->getItem(monitoringIndex));
+    MonitorItem* monitorItem = BaseModel::itemByIndexAs<MonitorItem>(monitoringIndex);
     if (monitorItem == nullptr || monitoringIndex == m_currentMonitoringIndex){
         return;
     }

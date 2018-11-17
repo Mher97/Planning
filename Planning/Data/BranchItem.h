@@ -1,17 +1,17 @@
 #ifndef BRANCHITEM_H
 #define BRANCHITEM_H
 
-#include "WorkSpaceItem.h"
+#include "ExplorerItem.h"
 
-class BranchItem : public WorkSpaceItem
+class BranchItem : public ExplorerItem
 {
     Q_OBJECT
     public:
-        BranchItem(QVector<QVariant> data, BaseItem *parent = nullptr, const int state = WorkSpaceItem::ISNEW);
+        BranchItem(BaseItem *parent = nullptr, const ItemState = ItemState::NEW);
         BranchItem(const BranchItem& src);
         virtual ~BranchItem();
         virtual BranchItem* clone() const override;
-        QIcon icon() const;
+        virtual QIcon icon() const;
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 };
 

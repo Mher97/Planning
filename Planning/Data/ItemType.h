@@ -9,7 +9,7 @@ namespace ItemType
     {
         Default = 0,
         RootItem = 1,
-        WorkSpaceItem = 2,
+        ExplorerItem = 2,
         ProjectItem = 3,
         BranchItem = 4,
         MonitorItem = 5,
@@ -25,8 +25,8 @@ namespace ItemType
                 return "Default";
             case Type::RootItem:
                 return "Root Item";
-            case Type::WorkSpaceItem:
-                return "Workspace";
+            case Type::ExplorerItem:
+                return "Explorer";
             case Type::ProjectItem:
                 return "Project";
             case Type::BranchItem:

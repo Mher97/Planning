@@ -7,7 +7,7 @@
 
 class BaseModel;
 class BaseItem;
-class WorkSpaceItem;
+class ExplorerItem;
 class MonitorItem;
 
 class WorkSpaceController
@@ -29,8 +29,8 @@ class WorkSpaceController
         static ItemType::Type getNextLevelType(const ItemType::Type type);
         void deleteItems(std::array<QList<int>, 2> &deletedItems);
         void saveLevel(QList<BaseItem*> Items, const ItemType::Type type);
-        void updateItem(WorkSpaceItem *item);
-        void saveModelHelper(WorkSpaceItem *item, int deep);
+        void updateItem(ExplorerItem *item);
+        void saveModelHelper(ExplorerItem *item, int deep);
         void saveImportedData(MonitorItem* monitorItem);
         void updateImportedData(MonitorItem* monitorItem);
         void saveDataMapping(MonitorItem* monitorItem);

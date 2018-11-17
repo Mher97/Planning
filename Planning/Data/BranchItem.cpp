@@ -1,15 +1,15 @@
 #include "BranchItem.h"
 
-BranchItem::BranchItem(QVector<QVariant> data, BaseItem *parent, const int state)
-    : WorkSpaceItem(data,parent, state)
+BranchItem::BranchItem(BaseItem *parent, const ExplorerItem::ItemState state)
+    : ExplorerItem(parent, state)
 {
     m_itemType = ItemType::Type::BranchItem;
-    if (m_state == WorkSpaceItem::ISNEW){
-        m_itemData[WorkSpaceItem::NAME_COLUMN] = ItemType::ItemTypetoString(ItemType::Type::BranchItem);
+    if (m_state == ExplorerItem::ItemState::NEW){
+        m_name = ItemType::ItemTypetoString(ItemType::Type::BranchItem);
     }
 }
 
-BranchItem::BranchItem(const BranchItem &src) : WorkSpaceItem(src)
+BranchItem::BranchItem(const BranchItem &src) : ExplorerItem(src)
 {
 
 }
